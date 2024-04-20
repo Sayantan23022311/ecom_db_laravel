@@ -37,12 +37,15 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    // if (results.length === 0) {
-    //   return res.status(401).json({ message: 'Invalid username or password' });
-    // }
+    console.log('Query results:', results); // Log the query results
 
-    // Authentication successful
-    res.json({ message: 'Login successful', user: results[0] });
+  if (results.length === 0) {
+    console.log('No matching records found'); // Log when no records are found
+    return res.status(401).json({ message: 'Invalid username or password' });
+  }
+
+  // Authentication successful
+  res.json({ message: 'Login successful', user: results[0] });
   });
 });
 
