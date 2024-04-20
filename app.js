@@ -53,12 +53,12 @@ app.post('/login', (req, res) => {
 //});
 
 // Define a route for GET requests
-app.get('/api/data', (req, res) => {
+app.get('/api/get-master-name', (req, res) => {
     // Query to fetch data from the database
     const query = 'SELECT * FROM TBL_MST_MASTER_NAME';
 
     // Execute the query
-    connection.query(query, (err, MASTER_NAME_SYS_ID,MASTER_NAME) => {
+    connection.query(query, (err, rows) => {
         if (err) {
             console.error('Error executing query:', err);
             res.status(500).json({ error: 'Internal server error' });
