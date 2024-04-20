@@ -33,7 +33,7 @@ app.post('/login', (req, res) => {
   
   connection.query(query, [username, password], (error, results) => {
     if (error) {
-      console.error('Error querying database:', error);
+      //console.error('Error querying database:', error);//
       return res.status(500).json({ message: 'Internal server error' });
     }
 
@@ -51,3 +51,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+
