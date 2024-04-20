@@ -58,7 +58,7 @@ app.get('/api/data', (req, res) => {
     const query = 'SELECT * FROM TBL_MST_MASTER_NAME';
 
     // Execute the query
-    connection.query(query, (err, rows) => {
+    connection.query(query, (err, MASTER_NAME_SYS_ID,MASTER_NAME) => {
         if (err) {
             console.error('Error executing query:', err);
             res.status(500).json({ error: 'Internal server error' });
