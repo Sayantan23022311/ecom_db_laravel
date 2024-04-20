@@ -37,22 +37,42 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    console.log('Query results:', results); // Log the query results
+    // if (results.length === 0) {
+    //   return res.status(401).json({ message: 'Invalid username or password' });
+    // }
 
-  if (results.length === 0) {
-    console.log('No matching records found'); // Log when no records are found
-    return res.status(401).json({ message: 'Invalid username or password' });
-  }
-
-  // Authentication successful
-  res.json({ message: 'Login successful', user: results[0] });
+    // Authentication successful
+    res.json({ message: 'Login successful', user: results[0] });
   });
+});
+
+// Start the server
+//const PORT = process.env.PORT || 3000;
+//app.listen(PORT, () => {
+  //console.log(`Server listening on port ${PORT}`);
+//});
+
+// Define a route for GET requests
+app.get('/api/get-master-name', (req, res) => {
+    // Query to fetch data from the database
+    const query = 'SELECT * FROM TBL_MST_MASTER_NAME';
+
+    // Execute the query
+    connection.query(query, (err, MASTER_NAME_SYS_ID , MASTER_NAME) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            res.status(500).json({ error: 'Internal server error' });
+            return;
+        }
+
+        // Send the fetched data as the response
+        res.json(MASTER_NAME_SYS_ID , MASTER_NAME);
+    });
 });
 
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+console.log(`Server listening on port ${PORT}`);
 });
-
 
