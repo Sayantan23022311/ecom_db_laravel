@@ -29,7 +29,7 @@ app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   // Query the database for user authentication
-  const query = 'SELECT * FROM user_auth WHERE username = ? AND password = ?';
+  const query = 'SELECT * FROM user_auth WHERE USER_NAME = ? AND password = ?';
   
   connection.query(query, [username, password], (error, results) => {
     if (error) {
@@ -53,22 +53,22 @@ app.post('/login', (req, res) => {
 //});
 
 // Define a route for GET requests
-app.get('/api/get-master-name', (req, res) => {
-    // Query to fetch data from the database
-    const query = 'SELECT * FROM TBL_MST_MASTER_NAME';
+// app.get('/get-master-name', (req, res) => {
+//     // Query to fetch data from the database
+//     const query = 'SELECT * FROM TBL_MASTER_NAME';
 
-    // Execute the query
-    connection.query(query, (err, MASTER_NAME_SYS_ID , MASTER_NAME) => {
-        if (err) {
-            console.error('Error executing query:', err);
-            res.status(500).json({ error: 'Internal server error' });
-            return;
-        }
+//     // Execute the query
+//     connection.query(query, (err, MASTER_NAME_SYS_ID , MASTER_NAME) => {
+//         if (err) {
+//             console.error('Error executing query:', err);
+//             res.status(500).json({ error: 'Internal server error' });
+//             return;
+//         }
 
-        // Send the fetched data as the response
-        res.json(MASTER_NAME_SYS_ID , MASTER_NAME);
-    });
-});
+//         // Send the fetched data as the response
+//         res.json(MASTER_NAME_SYS_ID , MASTER_NAME);
+//     });
+// });
 
 // Start the server
 const PORT = process.env.PORT || 3000;
