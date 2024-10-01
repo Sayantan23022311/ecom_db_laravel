@@ -246,6 +246,95 @@ app.get("/get-users", (req, res) => {
     res.status(400).json({ message: "Invalid query parameters" });
   }
 });
+// city api
+app.post("/add-city", (req, res) => {
+  const {
+   city
+  } = req.body;
+
+  // Validate input
+  
+
+  // SQL queries
+  
+  const userQuery = `
+    INSERT INTO tbl_master_city (CITY)
+    VALUES (?)
+  `;
+ 
+
+  // Start transaction
+  connection.beginTransaction((err) => {
+    if (err) {
+      console.error("Error starting transaction:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    // Check if email already exists
+    connection.query(userQuery,[city], (error, results) => {
+      if (error) {
+        return connection.rollback(() => {
+        console.log(error);
+        
+          res.status(500).json({ message: "Internal server error" });
+        });
+      }
+
+    
+      // Proceed with inserting into tbl_user_information_detailes
+    
+       
+
+          // Insert into tbl_user_authenticate
+      
+           
+            
+
+              // Commit transaction
+              connection.commit((err) => {
+                if (err) {
+                  return connection.rollback(() => {
+                    console.error("Error committing transaction:", err);
+                    res.status(500).json({ message: "Internal server error" });
+                  });
+                }
+
+                res.status(200).json({
+                  status: "True",
+                  message: "City added successfully",
+                
+                });
+              });
+            
+          
+        }
+      );
+    });
+  });
+  app.get("/get-city", (req, res) => {
+    const { ITEM, USER_SYS_ID } = req.query;
+  
+    if (ITEM === "VIEW_ALL") {
+      const query = "SELECT * FROM tbl_master_city";
+  
+      connection.query(query, (error, results) => {
+        if (error) {
+          console.error("Error executing query:", error);
+          return res.status(500).json({ message: "Internal server error" });
+        }
+  
+        if (results.length === 0) {
+          return res.status(404).json({ message: "No users found" });
+        }
+  
+        res.json({ response: results });
+      });
+    }
+    else {
+      res.status(400).json({ message: "Invalid query parameters" });
+    }
+  });
+
 // resturant api
 app.post("/add-user-with-orders", (req, res) => {
   const {
@@ -475,19 +564,19 @@ app.get("/get-all-data", (req, res) => {
   }
 });
 
-app.post("/add-resturant-owner-add-orders", (req, res) => {
+app.post("/api-post-create-add-resturant", (req, res) => {
   const {
-    RESTURANT_SYS_ID,
-    FOOD_ITEMS,
-    MIN_PRICE,
-    MAX_PRICE,
-    QTY,
-    RESTURANT_PRICE,
-    RESTURNAT_QTY,
-    RESTURANT_UNIT_PRICE,
-    RESTURANT_GRAND_TOTAL,
-    RESTURANT_DATE,
-    orders,
+   
+    RESTURANT_NAME,
+    USER_NAME,
+    PASSWORD,
+    EMAIL_ID,
+  
+    ADDRESS,
+    PH_NO,
+    RESTURANT_OPEN_TIME,
+    RESTURANT_CLOSE_TIME,
+  
   } = req.body;
   console.log(req.body);
 
@@ -496,27 +585,37 @@ app.post("/add-resturant-owner-add-orders", (req, res) => {
   // }
 
   const userQuery = `
-  INSERT INTO tbl_resturant_data_entry (RESTURANT_SYS_ID, FOOD_ITEMS, MIN_PRICE, MAX_PRICE, QTY, RESTURANT_PRICE,RESTURNAT_QTY,RESTURANT_UNIT_PRICE,RESTURANT_GRAND_TOTAL,RESTURANT_DATE)
-  VALUES ? 
+  INSERT INTO tbl_resturant_detailes (
+   RESTURANT_NAME,
+    USER_NAME,
+    PASSWORD,
+    EMAIL_ID,
+   
+    ADDRESS,
+    PH_NO,
+    RESTURANT_OPEN_TIME,
+    RESTURANT_CLOSE_TIME)
+  VALUES (?,?,?,?,?,?,?,?)
 `;
 
-  const orderValues = orders.map((order) => [
-    order.RESTURANT_SYS_ID,
-    order.FOOD_ITEMS,
-    order.MIN_PRICE,
-    order.MAX_PRICE,
-    order.QTY,
-    order.RESTURANT_PRICE,
-    order.RESTURNAT_QTY,
-    order.RESTURANT_UNIT_PRICE,
-    order.RESTURANT_GRAND_TOTAL,
-    order.RESTURANT_DATE,
-  ]);
 
-  // Map orders to associate them with the userId
+ 
+ const authQuery = `
+    INSERT INTO tbl_user_authenticate (USER_NAME, PASSWORD, EMAIL_ID, SYSTEM_ROLE)
+    VALUES (?, ?, ?, ?)
+  `;
 
-  // Insert the orders
-  connection.query(userQuery, [orderValues], (error, orderResults) => {
+ 
+  
+  connection.query(userQuery, [RESTURANT_NAME,
+    USER_NAME,
+    PASSWORD,
+    EMAIL_ID,
+    
+    ADDRESS,
+    PH_NO,
+    RESTURANT_OPEN_TIME,
+    RESTURANT_CLOSE_TIME], (error, orderResults) => {
     if (error) {
       console.log(error, "error");
 
@@ -535,51 +634,61 @@ app.post("/add-resturant-owner-add-orders", (req, res) => {
 
       res
         .status(200)
-        .json({ response: "orders added successfully", status: "true" });
+        .json({ response: "Resturant added successfully", status: "true" });
     });
   });
 });
-// { "orders": [
-//   {
-//       "FOOD_ITEMS": "Briyani2",
-//       "QTY": "5",
-//       "MAX_PRICE": "1200",
-//       "MIN_PRICE": "110",
-//       "RESTURANT_SYS_ID":"8",
-//       "RESTURANT_DATE":"26-09-2024",
-//        "RESTURNAT_QTY": "10",
-//       "RESTURANT_UNIT_PRICE":"155",
-//        "RESTURANT_GRAND_TOTAL":"200",
-//        "RESTURANT_PRICE":"5600"
 
-//   },
-//   {
-//       "FOOD_ITEMS": "Briyani2",
-//       "QTY": "5",
-//       "MAX_PRICE": "1200",
-//       "MIN_PRICE": "110",
-//       "RESTURANT_SYS_ID":"8",
-//       "RESTURANT_DATE":"26-09-2024",
-//        "RESTURNAT_QTY": "10",
-//       "RESTURANT_UNIT_PRICE":"155",
-//        "RESTURANT_GRAND_TOTAL":"200",
-//          "RESTURANT_PRICE":"5600"
+// {
+//   "RESTURANT_NAME": "Dada Boudi Briyani",
+//   "USER_NAME": "Riju Mukherjee",
+//   "PASSWORD": "PASSWORD",
+//   "EMAIL_ID": "rijumukherjee506@gmail.com",
 
-//   }
-// ]}
+//   "PH_NO":"9064145393",
+//    "ADDRESS": "Kolkata",
+//   "RESTURANT_OPEN_TIME":"10:00",
+//    "RESTURANT_CLOSE_TIME":"12:25"
+ 
+
+// }
 app.get("/get-resturant-all-data", (req, res) => {
   const { ITEM, RESTURANT_SYS_ID, RESTURANT_DATE } = req.query;
 
-  if (ITEM === "SPECIFIC") {
+  // if (ITEM === "SPECIFIC") {
+  //   // const specificId = req.body.specificId ||"8" // Get the specific RESTURANT_SYS_ID from the request body
+  //   // console.log('Specific ID:', specificId);
+
+  //   const query =
+  //     "SELECT * FROM tbl_resturant_data_entry WHERE RESTURANT_SYS_ID = ? AND RESTURANT_DATE=?";
+
+  //   connection.query(
+  //     query,
+  //     [RESTURANT_SYS_ID, RESTURANT_DATE],
+  //     (error, results) => {
+  //       if (error) {
+  //         console.error("Error executing query:", error);
+  //         return res.status(500).json({ message: "Internal server error" });
+  //       }
+
+  //       if (results.length === 0) {
+  //         return res.status(404).json({ message: "No Data Found" });
+  //       }
+
+  //       res.json({ response: results });
+  //     }
+  //   );
+  // }  
+   if (ITEM === "VIEW_ALL") {
     // const specificId = req.body.specificId ||"8" // Get the specific RESTURANT_SYS_ID from the request body
     // console.log('Specific ID:', specificId);
 
     const query =
-      "SELECT * FROM tbl_resturant_data_entry WHERE RESTURANT_SYS_ID = ? AND RESTURANT_DATE=?";
+      "SELECT * FROM tbl_resturant_detailes ";
 
     connection.query(
       query,
-      [RESTURANT_SYS_ID, RESTURANT_DATE],
+     
       (error, results) => {
         if (error) {
           console.error("Error executing query:", error);
@@ -593,7 +702,7 @@ app.get("/get-resturant-all-data", (req, res) => {
         res.json({ response: results });
       }
     );
-  } else {
+  }else {
     res.status(400).json({ message: "Invalid query parameters" });
   }
 });
