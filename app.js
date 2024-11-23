@@ -9,10 +9,10 @@ app.use(bodyParser.json());
 app.use(cors()); 
 // MySQL connection configuration
 const connection = mysql.createConnection({
-  host: 'sql.freedb.tech',
-  user: 'freedb_DEV_ECOM_DB_USER',
-  password: 'Bb#3&6Kv2zHyZW$',
-  database: 'freedb_DEV_ECOM'
+  host: 'sql12.freemysqlhosting.net',
+  user: 'sql12746850',
+  password: 'Am5dbNmDgn',
+  database: 'sql12746850'
 });
 
 // Connect to MySQL
@@ -37,11 +37,7 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ message: 'Internal server error' });
     }
 
-    // if (results.length === 0) {
-    //   return res.status(401).json({ message: 'Invalid username or password' });
-    // }
-
-    // Authentication successful
+   
     res.json({ message: 'Login successful', user: results[0] });
   });
 });
