@@ -3,11 +3,33 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const cors = require("cors");
 const app = express();
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer")
+
+const multer = require('multer');
+const path = require('path');
 
 // Middleware for parsing JSON requests
 app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Multer setup for handling file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Directory where files will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filenames
+  }
+});
+
+const upload = multer({ storage: storage });
+app.use('/uploads', express.static('uploads'));
+// const path = require('path');
+
+// Serve the "uploads" folder as a static directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MySQL connection configuration
 const connection = mysql.createConnection({
@@ -311,7 +333,7 @@ app.post("/add-city", (req, res) => {
       );
     });
   });
-  app.get("/get-city", (req, res) => {
+app.get("/get-city", (req, res) => {
     const { ITEM, USER_SYS_ID } = req.query;
   
     if (ITEM === "VIEW_ALL") {
@@ -336,108 +358,8 @@ app.post("/add-city", (req, res) => {
   });
 
 // resturant api
-app.post("/add-user-with-orders", (req, res) => {
-  const {
-    user_name,
-    password,
-    email_id,
-    contact_no,
-    address,
-    resturant_name,
-    orders,
-  } = req.body;
 
-  if (!user_name || !password || !resturant_name) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
 
-  const userQuery = `
-    INSERT INTO tbl_resturant_detailes (USER_NAME, PASSWORD, EMAIL_ID, CONTACT_NO, ADDRESS, RESTURNAN_NAME)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-  const authQuery = `
-  INSERT INTO tbl_user_authenticate (USER_NAME, PASSWORD, EMAIL_ID,SYSTEM_ROLE,RESTURANT_SYS_ID)
-  VALUES (?, ?, ?,?,?)
-`;
-  connection.beginTransaction((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Internal server error" });
-    }
-
-    // Insert the user and retrieve the user_id
-    connection.query(
-      userQuery,
-      [user_name, password, email_id, contact_no, address, resturant_name],
-      (error, userResults) => {
-        if (error) {
-          return connection.rollback(() => {
-            res
-              .status(500)
-              .json({ message: "Error inserting user information" });
-          });
-        }
-
-        const RESTURANT_SYS_ID = userResults.insertId; // Get the newly inserted user ID
-
-        const orderQuery = `
-            INSERT INTO tbl_resturant_orders (RESTURANT_SYS_ID, FOOD_ITEMS, QTY,MAX_PRICE,MIN_PRICE)
-            VALUES ?
-          `;
-
-        // Map orders to associate them with the userId
-        const orderValues = orders.map((order) => [
-          RESTURANT_SYS_ID,
-          order.FOOD_ITEMS,
-          order.QTY,
-          order.MAX_PRICE,
-          order.MIN_PRICE,
-        ]);
-        // Insert the orders
-        connection.query(orderQuery, [orderValues], (error, orderResults) => {
-          if (error) {
-            return connection.rollback(() => {
-              res.status(500).json({ message: "Error inserting orders" });
-            });
-          }
-          connection.query(
-            authQuery,
-            [
-              user_name,
-              password,
-              email_id,
-              "RESTURANT_OWNER",
-              RESTURANT_SYS_ID,
-            ],
-            (error) => {
-              if (error) {
-                return connection.rollback(() => {
-                  console.error(
-                    "Error inserting into tbl_user_authenticate:",
-                    error
-                  );
-                  res.status(500).json({ message: "Internal server error" });
-                });
-              }
-            }
-          );
-
-          // Commit the transaction
-          connection.commit((err) => {
-            if (err) {
-              return connection.rollback(() => {
-                res.status(500).json({ message: "Transaction commit failed" });
-              });
-            }
-
-            res
-              .status(200)
-              .json({ response: "orders added successfully", status: "true" });
-          });
-        });
-      }
-    );
-  });
-});
 
 // {
 //   "user_name": "NILAVO",
@@ -461,108 +383,7 @@ app.post("/add-user-with-orders", (req, res) => {
 //   ]
 // }
 // resturant get api call
-app.get("/get-all-data", (req, res) => {
-  const { ITEM, RESTURANT_SYS_ID } = req.query;
-  // Query to join user information and orders
-  if (ITEM === "VIEW_ALL") {
-    const query = `
-    SELECT u.RESTURANT_SYS_ID AS RESTURANT_SYS_ID, u.USER_NAME, u.PASSWORD, u.EMAIL_ID, u.CONTACT_NO, u.ADDRESS, u.RESTURNAN_NAME, 
-           o.FOOD_ITEMS, o.QTY, o.MAX_PRICE, o.MIN_PRICE
-    FROM tbl_resturant_detailes u
-    LEFT JOIN tbl_resturant_orders o ON u.RESTURANT_SYS_ID = o.RESTURANT_SYS_ID
-  `;
 
-    connection.query(query, (error, results) => {
-      if (error) {
-        console.error("Error executing query:", error);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-
-      // Group results by USER_ID
-      const groupedResults = results.reduce((acc, row) => {
-        // Check if the user is already in the accumulator
-        if (!acc[row.RESTURANT_SYS_ID]) {
-          // Add the user details to the accumulator
-          acc[row.RESTURANT_SYS_ID] = {
-            RESTURANT_SYS_ID: row.RESTURANT_SYS_ID,
-            USER_NAME: row.USER_NAME,
-            PASSWORD: row.PASSWORD,
-            EMAIL_ID: row.EMAIL_ID,
-            CONTACT_NO: row.CONTACT_NO,
-            ADDRESS: row.ADDRESS,
-            RESTURNAN_NAME: row.RESTURNAN_NAME,
-            orders: [], // Initialize orders array
-          };
-        }
-
-        // If there are food items, push them to the orders array
-        if (row.FOOD_ITEMS) {
-          acc[row.RESTURANT_SYS_ID].orders.push({
-            FOOD_ITEMS: row.FOOD_ITEMS,
-            QTY: row.QTY,
-            MAX_PRICE: row.MAX_PRICE,
-            MIN_PRICE: row.MIN_PRICE,
-          });
-        }
-
-        return acc;
-      }, {});
-
-      // Convert the grouped results object to an array of users
-      const response = Object.values(groupedResults);
-
-      // Send the final grouped response
-      res.status(200).json(response);
-    });
-  } else if (ITEM === "SPECIFIC") {
-    // const specificId = req.body.specificId ||"8" // Get the specific RESTURANT_SYS_ID from the request body
-    // console.log('Specific ID:', specificId);
-    const query = `
-    SELECT u.RESTURANT_SYS_ID AS RESTURANT_SYS_ID, u.USER_NAME, u.PASSWORD, u.EMAIL_ID, u.CONTACT_NO, u.ADDRESS, u.RESTURNAN_NAME, 
-           o.FOOD_ITEMS, o.QTY, o.MAX_PRICE, o.MIN_PRICE
-    FROM tbl_resturant_detailes u
-    LEFT JOIN tbl_resturant_orders o ON u.RESTURANT_SYS_ID = o.RESTURANT_SYS_ID
-    WHERE u.RESTURANT_SYS_ID = ?
-  `;
-
-    connection.query(query, [RESTURANT_SYS_ID], (error, results) => {
-      if (error) {
-        console.error("Error executing query:", error);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-
-      // Group results for the specific restaurant
-      const groupedResults = results.reduce((acc, row) => {
-        if (!acc[row.RESTURANT_SYS_ID]) {
-          acc[row.RESTURANT_SYS_ID] = {
-            RESTURANT_SYS_ID: row.RESTURANT_SYS_ID,
-            USER_NAME: row.USER_NAME,
-            PASSWORD: row.PASSWORD,
-            EMAIL_ID: row.EMAIL_ID,
-            CONTACT_NO: row.CONTACT_NO,
-            ADDRESS: row.ADDRESS,
-            RESTURNAN_NAME: row.RESTURNAN_NAME,
-            orders: [], // Initialize orders array
-          };
-        }
-
-        if (row.FOOD_ITEMS) {
-          acc[row.RESTURANT_SYS_ID].orders.push({
-            FOOD_ITEMS: row.FOOD_ITEMS,
-            QTY: row.QTY,
-            MAX_PRICE: row.MAX_PRICE,
-            MIN_PRICE: row.MIN_PRICE,
-          });
-        }
-
-        return acc;
-      }, {});
-
-      const response = Object.values(groupedResults);
-      res.status(200).json(response);
-    });
-  }
-});
 
 app.post("/api-post-create-add-resturant", (req, res) => {
   const {
@@ -601,13 +422,25 @@ app.post("/api-post-create-add-resturant", (req, res) => {
 
  
  const authQuery = `
-    INSERT INTO tbl_user_authenticate (USER_NAME, PASSWORD, EMAIL_ID, SYSTEM_ROLE)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO tbl_user_authenticate (USER_NAME, PASSWORD, EMAIL_ID, SYSTEM_ROLE,RESTURANT_SYS_ID)
+    VALUES (?, ?, ?, ?,?)
   `;
 
- 
+ connection.beginTransaction((err) => {
+    if (err) {
+      console.error("Error starting transaction:", err);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
   
-  connection.query(userQuery, [RESTURANT_NAME,
+    
+
+   
+
+      // Proceed with inserting into tbl_user_information_detailes
+      connection.query(
+        userQuery,
+       [RESTURANT_NAME,
     USER_NAME,
     PASSWORD,
     EMAIL_ID,
@@ -615,28 +448,56 @@ app.post("/api-post-create-add-resturant", (req, res) => {
     ADDRESS,
     PH_NO,
     RESTURANT_OPEN_TIME,
-    RESTURANT_CLOSE_TIME], (error, orderResults) => {
-    if (error) {
-      console.log(error, "error");
+    RESTURANT_CLOSE_TIME],
+        (error, userResults) => {
+          if (error) {
+            return connection.rollback(() => {
+              console.error(
+                "Error inserting into tbl_user_information_detailes:",
+                error
+              );
+              res.status(500).json({ message: "Internal server error" });
+            });
+          }
+          const RESTURANT_SYS_ID = userResults.insertId;
+          // Insert into tbl_user_authenticate
+          connection.query(
+            authQuery,
+            [USER_NAME, PASSWORD, EMAIL_ID, "RESTURANT",RESTURANT_SYS_ID],
+            (error, authResults) => {
+              if (error) {
+                return connection.rollback(() => {
+                  console.error(
+                    "Error inserting into tbl_user_authenticate:",
+                    error
+                  );
+                  res.status(500).json({ message: "Internal server error" });
+                });
+              }
 
-      return connection.rollback(() => {
-        res.status(500).json({ message: "Error inserting orders" });
-      });
-    }
+              // Commit transaction
+              connection.commit((err) => {
+                if (err) {
+                  return connection.rollback(() => {
+                    console.error("Error committing transaction:", err);
+                    res.status(500).json({ message: "Internal server error" });
+                  });
+                }
 
-    // Commit the transaction
-    connection.commit((err) => {
-      if (err) {
-        return connection.rollback(() => {
-          res.status(500).json({ message: "Transaction commit failed" });
-        });
-      }
-
-      res
-        .status(200)
-        .json({ response: "Resturant added successfully", status: "true" });
-    });
+                res.status(200).json({
+                  status: "True",
+                  message: "Resturant added successfully",
+                 
+                });
+              });
+            }
+          );
+        }
+      );
+    
   });
+  
+ 
 });
 
 // {
@@ -703,6 +564,132 @@ app.get("/get-resturant-all-data", (req, res) => {
       }
     );
   }else {
+    res.status(400).json({ message: "Invalid query parameters" });
+  }
+});
+app.post("/api-post-create-resturant-product-add", upload.single('productImage'), (req, res) => {
+  const {
+    RESTURANT_SYS_ID,
+    PRODUCT_NAME,
+    PRODUCT_SUB_NAME,
+    QTY,
+    UOM,
+    RESTURANT_PRICE,
+    PRODUCT_TYPE,
+    PRODUCT_DESCRIPTION,
+    PRODUCT_CATEGORY,
+    DELIVERY_TIME,
+    orders
+    
+  } = req.body;
+
+  console.log(req.body);
+  // if (!RESTURANT_SYS_ID ) {
+  //   return res.status(500).json({ message: "Resturant sys id required" });
+  // }
+  const productImage = req.file ? req.file.path : null;
+  const orderQuery = `
+    INSERT INTO tbl_resturant_orders ( 
+    RESTURANT_SYS_ID,
+    PRODUCT_NAME,
+    PRODUCT_SUB_NAME,
+    QTY,
+    UOM,
+    RESTURANT_PRICE,
+    PRODUCT_TYPE,
+    PRODUCT_DESCRIPTION,
+    PRODUCT_CATEGORY,
+    DELIVERY_TIME,
+    PRODUCT_IMAGE)
+    VALUES ?
+  `;
+ 
+  connection.beginTransaction((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+    // Insert the user and retrieve the user_id
+   
+   
+
+    
+
+        // Map orders to associate them with the userId
+        const orderValues = orders.map((order) => [
+          order.RESTURANT_SYS_ID,
+          order.PRODUCT_NAME,
+          order.PRODUCT_SUB_NAME,
+          order.QTY,
+          order.UOM,
+          order.RESTURANT_PRICE,
+          order.PRODUCT_TYPE,
+          order.PRODUCT_DESCRIPTION,
+          order.PRODUCT_CATEGORY,
+          order.DELIVERY_TIME,
+          order.PRODUCT_IMAGE,
+        ]);
+        // Insert the orders
+        connection.query(orderQuery, [orderValues], (error, orderResults) => {
+          if (error) {
+            console.log(error,"error");
+            
+            return connection.rollback(() => {
+              res.status(500).json({ message: "Error inserting orders" });
+            });
+          }
+        
+
+          // Commit the transaction
+          connection.commit((err) => {
+            if (err) {
+              return connection.rollback(() => {
+                res.status(500).json({ message: "Transaction commit failed" });
+              });
+            }
+
+            res
+              .status(200)
+              .json({ response: "orders added successfully", status: "true" });
+          });
+        });
+      }
+    );
+  });
+  app.get("/get-resturant-food-detailes", (req, res) => {
+  const { ITEM, RESTURANT_SYS_ID } = req.query;
+
+  if (ITEM === "VIEW_ALL") {
+    const query = "SELECT * FROM tbl_resturant_orders";
+
+    connection.query(query, (error, results) => {
+      if (error) {
+        console.error("Error executing query:", error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "No users found" });
+      }
+
+      res.json({ response: results });
+    });
+  } else if (ITEM === "SPECIFIC" && RESTURANT_SYS_ID) {
+    const query = "SELECT * FROM tbl_resturant_orders WHERE RESTURANT_SYS_ID = ?";
+
+    connection.query(query, [RESTURANT_SYS_ID], (error, results) => {
+      if (error) {
+        console.error("Error executing query:", error);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      if (results.length === 0) {
+        return res.status(200).json({ message: "No Data Found" });
+      }
+
+      res.json({response: results });
+    });
+  } else {
     res.status(400).json({ message: "Invalid query parameters" });
   }
 });
