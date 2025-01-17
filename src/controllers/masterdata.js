@@ -1,31 +1,19 @@
-const userModel = require("../models/usermodels");
+const CategoryModel = require("../models/masterdatamodels");
 
-exports.login = (req, res) => {
-   
-    
-  const { USER_NAME, PASSWORD } = req.body;
+exports.addCategory = (req, res) => {
+  const { CATEGORY } = req.body;
 
-  if (!USER_NAME || !PASSWORD) {
-    return res
-      .status(400)
-      .json({ message: "Username or password missing for login" });
+  if (!CATEGORY) {
+    return res.status(400).json({ message: "Category name is required" });
   }
 
-  userModel.findUserByCredentials(USER_NAME, PASSWORD, (error, results) => {
-    console.log(results,"results");
-    
-    if (error) {
-      console.error("Error executing query:", error);
+  CategoryModel.addCategory(CATEGORY, (err, results) => {
+    if (err) {
       return res.status(500).json({ message: "Internal server error" });
     }
-
-    if (results.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "Invalid username or password" });
-    }
-
-    const user = results[0];
-    res.json({ message: "Login successful", user });
+    res.status(200).json({
+      status: "True",
+      message: "Category added successfully",
+    });
   });
 };

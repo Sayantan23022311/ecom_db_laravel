@@ -1,11 +1,17 @@
 const connection = require("../Config/db");
 
-// Function to find a user by username and password
-exports.findUserByCredentials = (USER_NAME, PASSWORD, callback) => {
-  const query =
-    "SELECT * FROM tbl_user_authenticate WHERE USER_NAME = ? AND PASSWORD = ?";
-  connection.query(query, [USER_NAME, PASSWORD], callback);
+const CategoryModel = {
+  // Add city
+  addCategory: (CATEGORY, callback) => {
+    const query = `INSERT INTO tbl_product_category (PRODUCT_CATEGORY) VALUES (?)`;
+    connection.query(query, [CATEGORY], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
 };
 
-
-
+module.exports = CategoryModel;
