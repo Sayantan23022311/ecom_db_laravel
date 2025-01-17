@@ -1,0 +1,5 @@
+USER_NAME PASSWORD R checkout
+mobile app r registration
+(
+    username,email,phno,password
+)
