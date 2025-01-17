@@ -25,21 +25,60 @@ connection.connect((err) => {
 });
 
 // Login route
-app.post('/login', (req, res) => {
+app.post("/auth/login", (req, res) => {
+
+
   const { username, password } = req.body;
 
-  // Query the database for user authentication
-  const query = 'SELECT * FROM user_auth WHERE USER_NAME = ? AND password = ?';
-  
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ message: "Username or password missing for login" });
+  }
+
+  const query =
+    "SELECT * FROM USER_AUTHENTICATE WHERE USER_NAME = ? AND PASSWORD = ?";
+
   connection.query(query, [username, password], (error, results) => {
     if (error) {
-      //console.error('Error querying database:', error);//
-      return res.status(500).json({ message: 'Internal server error' });
+      console.error("Error executing query:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+        const user = results[0];
+    console.log("mithi",results[0])
+        // Check if the password is correct
+        if (user.PASSWORD !== password) {
+          return res.status(200).json({ message: "Invalid password" });
+        }
+
+    if (results.length === 0) {
+      console.log("Invalid username or password");
+      return res
+        .status(200)
+        .json({ message: "Invalid username or password for login" });
     }
 
-   
-    res.json({ message: 'Login successful', user: results[0] });
+    res.json({ message: "Login successful", user: results[0] });
   });
+  //   const userQuery = `
+  //   SELECT * FROM tbl_user_information WHERE USER_NAME = ?
+  // `;
+
+  // connection.query(userQuery, [username], (error, userResults) => {
+  //   if (error) {
+  //     console.error('Error fetching user information:', error);
+  //     return res.status(500).json({ message: 'Internal server error' });
+  //   }
+
+  //   if (userResults.length === 0) {
+  //     return res.status(404).json({ message: 'User information not found' });
+  //   }
+
+  //   res.json({
+  //     message: 'Login successful',
+  //     user: userResults[0],
+  //   });
+  // });
 });
 
 // Start the server
