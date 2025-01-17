@@ -28,9 +28,11 @@ exports.viewCategory = (req, res) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
-      const user = results[0];
+      const response = results;
+      
+      
       res.status(200).json({
-        status: "True",data
+        status: "True",response
        
         // message: "Category added successfully",
       });
