@@ -39,14 +39,16 @@ exports.viewCategory = (req, res) => {
     });
   };
   exports.addSubCategory = (req, res) => {
-    const { PRODUCT_SUBCATEGORY } = req.body;
+    const { PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID  } = req.body;
   
-    if (!PRODUCT_SUBCATEGORY || !PRODUCT_CATEGORY_SYS_ID) {
+    if (!PRODUCT_SUB_CATEGORY|| !PRODUCT_CATEGORY_SYS_ID ) {
       return res.status(400).json({ message: "Subcategory name is required" });
     }
   
-    CategoryModel.addSubCategory(PRODUCT_SUBCATEGORY, (err, results) => {
+    CategoryModel.addSubCategory(PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID, (err, results) => {
       if (err) {
+        console.log(err);
+        
         return res.status(500).json({ message: "Internal server error" });
       }
       res.status(200).json({
@@ -55,3 +57,26 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
+  exports.viewSubCategory = (req, res) => {
+    const { ITEM,PRODUCT_CATEGORY_SYS_ID } = req.query;
+  
+    if (!ITEM || !PRODUCT_CATEGORY_SYS_ID) {
+      return res.status(400).json({ message: "Invalid paramiter" });
+    }
+  
+    CategoryModel.viewSubCategory(ITEM, PRODUCT_CATEGORY_SYS_ID,(err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      const response = results;
+      
+      
+      res.status(200).json({
+        status: "True",response
+       
+        // message: "Category added successfully",
+      });
+    });
+  };
+  
+

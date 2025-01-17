@@ -25,15 +25,29 @@ const CategoryModel = {
     }
     
   },
-  addSubCategory: (PRODUCT_SUBCATEGORY, callback) => {
-    const query = `INSERT INTO tbl_product_subcategory (PRODUCT_SUBCATEGORY) VALUES (?)`;
-    connection.query(query, [PRODUCT_SUBCATEGORY], (err, results) => {
+  addSubCategory: (PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID, callback) => {
+    
+    const query = `INSERT INTO tbl_product_subcategory (PRODUCT_SUB_CATEGORY, PRODUCT_CATEGORY_SYS_ID) VALUES (?, ?)`;
+    connection.query(query, [PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID], (err, results) => {
       if (err) {
         
         return callback(err, null);
       }
       callback(null, results);
     });
+  },
+  viewSubCategory: (ITEM, PRODUCT_CATEGORY_SYS_ID,callback) => {
+    if(ITEM=="VIEW_ALL" || PRODUCT_CATEGORY_SYS_ID !="" ){
+        const query = `SELECT * FROM tbl_product_subcategory WHERE PRODUCT_CATEGORY_SYS_ID = ?;`;
+        connection.query(query, [PRODUCT_CATEGORY_SYS_ID], (err, results) => {
+          if (err) {
+            console.error("Error in addCity model:", err);
+            return callback(err, null);
+          }
+          callback(null, results);
+        });
+    }
+    
   },
 
 };
