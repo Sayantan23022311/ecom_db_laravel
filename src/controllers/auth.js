@@ -1,6 +1,8 @@
 const userModel = require("../models/usermodels");
 
 exports.login = (req, res) => {
+   
+    
   const { USER_NAME, PASSWORD } = req.body;
 
   if (!USER_NAME || !PASSWORD) {
@@ -10,6 +12,8 @@ exports.login = (req, res) => {
   }
 
   userModel.findUserByCredentials(USER_NAME, PASSWORD, (error, results) => {
+    console.log(results,"results");
+    
     if (error) {
       console.error("Error executing query:", error);
       return res.status(500).json({ message: "Internal server error" });
@@ -17,7 +21,7 @@ exports.login = (req, res) => {
 
     if (results.length === 0) {
       return res
-        .status(401)
+        .status(200)
         .json({ message: "Invalid username or password" });
     }
 
