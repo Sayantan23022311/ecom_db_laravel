@@ -9,10 +9,10 @@ app.use(bodyParser.json());
 app.use(cors()); 
 // MySQL connection configuration
 const connection = mysql.createConnection({
-  host: 'sql12.freemysqlhosting.net',
-  user: 'sql12746850',
-  password: 'Am5dbNmDgn',
-  database: 'sql12746850'
+  host: "localhost",
+  user: "root",
+  password: "A%bcd1290",
+  database: "sys",
 });
 
 // Connect to MySQL
@@ -26,29 +26,32 @@ connection.connect((err) => {
 
 // Login route
 app.post("/auth/login", (req, res) => {
+console.log("call")
 
+  const { USER_NAME, PASSWORD } = req.body;
 
-  const { username, password } = req.body;
-
-  if (!username || !password) {
+  if (!USER_NAME || !PASSWORD) {
     return res
       .status(400)
       .json({ message: "Username or password missing for login" });
   }
 
   const query =
-    "SELECT * FROM USER_AUTHENTICATE WHERE USER_NAME = ? AND PASSWORD = ?";
+    "SELECT * FROM tbl_user_authenticate WHERE USER_NAME = ? AND PASSWORD = ?";
 
-  connection.query(query, [username, password], (error, results) => {
+  connection.query(query, [USER_NAME, PASSWORD], (error, results) => {
     if (error) {
       console.error("Error executing query:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
         const user = results[0];
-    console.log("mithi",results[0])
-        // Check if the password is correct
-        if (user.PASSWORD !== password) {
+        console.log(user,"user");
+        
+   
+        if (!user.PASSWORD !== PASSWORD) {
           return res.status(200).json({ message: "Invalid password" });
+        }else{
+          
         }
 
     if (results.length === 0) {
