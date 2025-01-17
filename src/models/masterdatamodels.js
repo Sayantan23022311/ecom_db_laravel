@@ -1,7 +1,7 @@
 const connection = require("../Config/db");
 
 const CategoryModel = {
-  // Add city
+  // Add category
   addCategory: (CATEGORY, callback) => {
     const query = `INSERT INTO tbl_product_category (PRODUCT_CATEGORY) VALUES (?)`;
     connection.query(query, [CATEGORY], (err, results) => {
