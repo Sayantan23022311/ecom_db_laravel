@@ -1,6 +1,5 @@
-const connection = require("../Config/db"); // Import DB connection
+const userModel = require("../models/usermodels");
 
-// Login controller
 exports.login = (req, res) => {
   const { USER_NAME, PASSWORD } = req.body;
 
@@ -10,9 +9,7 @@ exports.login = (req, res) => {
       .json({ message: "Username or password missing for login" });
   }
 
-  const query =
-    "SELECT * FROM tbl_user_authenticate WHERE USER_NAME = ? AND PASSWORD = ?";
-  connection.query(query, [USER_NAME, PASSWORD], (error, results) => {
+  userModel.findUserByCredentials(USER_NAME, PASSWORD, (error, results) => {
     if (error) {
       console.error("Error executing query:", error);
       return res.status(500).json({ message: "Internal server error" });
