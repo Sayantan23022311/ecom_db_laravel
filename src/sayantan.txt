@@ -3,3 +3,6 @@ mobile app r registration
 (
     username,email,phno,password
 )
+
+112-218 (apicall branch)
+email,phno,userid,systemrole="mobileapp" login table main login table a insert hba
