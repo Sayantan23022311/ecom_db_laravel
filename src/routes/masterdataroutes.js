@@ -7,6 +7,6 @@ const router = express.Router();
 
 // Login route
 router.post('/add-category', category.addCategory);
-router.post('/get-category', category.viewCategory);
+router.get('/get-category', category.viewCategory);
 
 module.exports = router;

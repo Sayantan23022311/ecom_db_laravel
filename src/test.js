@@ -1,64 +1,23 @@
-app.post("/add-city", (req, res) => {
-    const {
-     city
-    } = req.body;
+app.get("/get-city", (req, res) => {
+    const { ITEM, USER_SYS_ID } = req.query;
   
-    // Validate input
-    
+    if (ITEM === "VIEW_ALL") {
+      const query = "SELECT * FROM tbl_master_city";
   
-    // SQL queries
-    
-    const userQuery = `
-      INSERT INTO tbl_master_city (CITY)
-      VALUES (?)
-    `;
-   
-  
-    // Start transaction
-    connection.beginTransaction((err) => {
-      if (err) {
-        console.error("Error starting transaction:", err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-  
-      // Check if email already exists
-      connection.query(userQuery,[city], (error, results) => {
+      connection.query(query, (error, results) => {
         if (error) {
-          return connection.rollback(() => {
-          console.log(error);
-          
-            res.status(500).json({ message: "Internal server error" });
-          });
+          console.error("Error executing query:", error);
+          return res.status(500).json({ message: "Internal server error" });
         }
   
-      
-        // Proceed with inserting into tbl_user_information_detailes
-      
-         
+        if (results.length === 0) {
+          return res.status(404).json({ message: "No users found" });
+        }
   
-            // Insert into tbl_user_authenticate
-        
-             
-              
-  
-                // Commit transaction
-                connection.commit((err) => {
-                  if (err) {
-                    return connection.rollback(() => {
-                      console.error("Error committing transaction:", err);
-                      res.status(500).json({ message: "Internal server error" });
-                    });
-                  }
-  
-                  res.status(200).json({
-                    status: "True",
-                    message: "City added successfully",
-                  
-                  });
-                });
-              
-            
-          }
-        );
+        res.json({ response: results });
       });
-    });
+    }
+    else {
+      res.status(400).json({ message: "Invalid query parameters" });
+    }
+  });
