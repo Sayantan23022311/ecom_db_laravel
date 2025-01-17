@@ -25,6 +25,16 @@ const CategoryModel = {
     }
     
   },
+  addSubCategory: (PRODUCT_SUBCATEGORY, callback) => {
+    const query = `INSERT INTO tbl_product_subcategory (PRODUCT_SUBCATEGORY) VALUES (?)`;
+    connection.query(query, [PRODUCT_SUBCATEGORY], (err, results) => {
+      if (err) {
+        
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
 
 };
 

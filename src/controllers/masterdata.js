@@ -38,3 +38,20 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
+  exports.addSubCategory = (req, res) => {
+    const { PRODUCT_SUBCATEGORY } = req.body;
+  
+    if (!PRODUCT_SUBCATEGORY || !PRODUCT_CATEGORY_SYS_ID) {
+      return res.status(400).json({ message: "Subcategory name is required" });
+    }
+  
+    CategoryModel.addSubCategory(PRODUCT_SUBCATEGORY, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "SubCategory added successfully",
+      });
+    });
+  };
