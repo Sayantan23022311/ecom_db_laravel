@@ -9,3 +9,10 @@ mobile app r registration
 112-218 (apicall branch)
 email,phno,userid,systemrole="mobileapp" login table main login table a insert hba
 email duplicate check
+
+
+
+app.js
+routes
+controleer --db check
+model
