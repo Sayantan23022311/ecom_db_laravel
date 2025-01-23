@@ -2,9 +2,9 @@ const connection = require("../Config/db");
 
 const CategoryModel = {
   // Add category
-  addCategory: (CATEGORY, callback) => {
-    const query = `INSERT INTO tbl_product_category (PRODUCT_CATEGORY) VALUES (?)`;
-    connection.query(query, [CATEGORY], (err, results) => {
+  addCategory: (COURSE_CATEGORY_NAME, callback) => {
+    const query = `INSERT INTO TBL_MST_COURSE_CATEGORY (COURSE_CATEGORY_NAME) VALUES (?)`;
+    connection.query(query, [COURSE_CATEGORY_NAME], (err, results) => {
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);
@@ -14,7 +14,7 @@ const CategoryModel = {
   },
   viewCategory: (ITEM, callback) => {
     if(ITEM=="VIEW_ALL" ){
-        const query = `SELECT * FROM tbl_product_category`;
+        const query = `SELECT * FROM TBL_MST_COURSE_CATEGORY`;
         connection.query(query,  (err, results) => {
           if (err) {
             console.error("Error in addCity model:", err);
@@ -25,10 +25,10 @@ const CategoryModel = {
     }
     
   },
-  addSubCategory: (PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID, callback) => {
+  addSubCategory: (COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID, callback) => {
     
-    const query = `INSERT INTO tbl_product_subcategory (PRODUCT_SUB_CATEGORY, PRODUCT_CATEGORY_SYS_ID) VALUES (?, ?)`;
-    connection.query(query, [PRODUCT_SUB_CATEGORY,PRODUCT_CATEGORY_SYS_ID], (err, results) => {
+    const query = `INSERT INTO TBL_MST_COURSE_SUB_CATEGORY (COURSE_SUB_CATEGORY_NAME, COURSE_CATEGORY_SYS_ID) VALUES (?, ?)`;
+    connection.query(query, [COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID], (err, results) => {
       if (err) {
         
         return callback(err, null);
@@ -36,10 +36,33 @@ const CategoryModel = {
       callback(null, results);
     });
   },
-  viewSubCategory: (ITEM, PRODUCT_CATEGORY_SYS_ID,callback) => {
-    if(ITEM=="VIEW_ALL" || PRODUCT_CATEGORY_SYS_ID !="" ){
-        const query = `SELECT * FROM tbl_product_subcategory WHERE PRODUCT_CATEGORY_SYS_ID = ?;`;
-        connection.query(query, [PRODUCT_CATEGORY_SYS_ID], (err, results) => {
+  viewSubCategory: (ITEM, COURSE_CATEGORY_SYS_ID,callback) => {
+    if(ITEM=="VIEW_ALL" || COURSE_CATEGORY_SYS_ID !="" ){
+        const query = `SELECT * FROM TBL_MST_COURSE_SUB_CATEGORY WHERE COURSE_CATEGORY_SYS_ID = ?;`;
+        connection.query(query, [COURSE_CATEGORY_SYS_ID], (err, results) => {
+          if (err) {
+            console.error("Error in addCity model:", err);
+            return callback(err, null);
+          }
+          callback(null, results);
+        });
+    }
+    
+  },
+  addSystemRole: (SYSTEM_ROLE_NAME, callback) => {
+    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME) VALUES (?)`;
+    connection.query(query, [SYSTEM_ROLE_NAME], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
+  viewSystemRole: (ITEM, callback) => {
+    if(ITEM=="VIEW_ALL" ){
+        const query = `SELECT * FROM TBL_SYSTEM_ROLE`;
+        connection.query(query,  (err, results) => {
           if (err) {
             console.error("Error in addCity model:", err);
             return callback(err, null);
