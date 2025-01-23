@@ -13,6 +13,7 @@ app.use(cors());
 // Routes
 app.use('/auth', authRoutes);
 app.use('/webapi', masterRoutes);
+app.use('/webapi', userRoutes);
 //app.use('/mobileapp/auth', authRoutes);
 
 // Start server
