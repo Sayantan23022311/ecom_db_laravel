@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./src/routes/authroutes'); // Import routes
 const masterRoutes = require('./src/routes/masterdataroutes');
+const userRoutes = require('./src/routes/userroutes');
 //const mobileapproutes = require('./src/routes/masterdataroutes');
 const app = express();
 
