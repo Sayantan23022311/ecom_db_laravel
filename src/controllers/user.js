@@ -7,8 +7,7 @@ exports.addUser = (req, res) => {
 
   // Validate required fields
   if (
-    !FIRST_NAME || !LAST_NAME || !ADDRESS || !PIN_CODE || !COUNTRY ||
-    !DOB || !EMAIL_ID || !GENDER || !PHONE_NUMBER || !USER_NAME || 
+    !FIRST_NAME || !LAST_NAME  || !EMAIL_ID  || !PHONE_NUMBER || !USER_NAME || 
     !PASSWORD || !SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME
   ) {
     return res.status(400).json({ message: "All fields are required" });
@@ -22,7 +21,7 @@ exports.addUser = (req, res) => {
     }
 
     if (existingUser) {
-      return res.status(409).json({ message: "Email ID already exists" });
+      return res.status(200).json({ message: "Email ID already exists" });
     }
 
     // Add user to TBL_USER_INFO

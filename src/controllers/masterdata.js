@@ -1,6 +1,6 @@
 const CategoryModel = require("../models/masterdatamodels");
 
-exports.addCategory = (req, res) => {
+  exports.addCategory = (req, res) => {
   const { COURSE_CATEGORY_NAME } = req.body;
 
   if (!COURSE_CATEGORY_NAME) {
@@ -16,8 +16,8 @@ exports.addCategory = (req, res) => {
       message: "Category added successfully",
     });
   });
-};
-exports.viewCategory = (req, res) => {
+  };
+  exports.viewCategory = (req, res) => {
     const { ITEM } = req.query;
   
     if (!ITEM) {

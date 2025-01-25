@@ -1,15 +1,15 @@
 const userModel = require("../models/usermodels");
 
-exports.login = (req, res) => {
+  exports.login = (req, res) => {
    
     
   const { USER_NAME, PASSWORD } = req.body;
 
-  if (!USER_NAME || !PASSWORD) {
+   if (!USER_NAME || !PASSWORD) {
     return res
       .status(400)
       .json({ message: "Username or password missing for login" });
-  }
+   }
 
   userModel.findUserByCredentials(USER_NAME, PASSWORD, (error, results) => {
     console.log(results,"results");
@@ -28,4 +28,5 @@ exports.login = (req, res) => {
     const user = results[0];
     res.json({ message: "Login successful", user });
   });
+
 };
