@@ -38,7 +38,7 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
-  exports.addSubCategory = (req, res) => {
+exports.addSubCategory = (req, res) => {
     const { COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID  } = req.body;
   
     if (!COURSE_SUB_CATEGORY_NAME|| !COURSE_CATEGORY_SYS_ID ) {
@@ -57,7 +57,7 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
-  exports.viewSubCategory = (req, res) => {
+exports.viewSubCategory = (req, res) => {
     const { ITEM,COURSE_CATEGORY_SYS_ID } = req.query;
   
     if (!ITEM || !COURSE_CATEGORY_SYS_ID) {
@@ -78,14 +78,17 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
-  exports.addSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_NAME } = req.body;
+exports.addSystemRole = (req, res) => {
+    const { SYSTEM_ROLE_NAME, CREATED_BY, ISACTIVE } = req.body;
   
-    if (!SYSTEM_ROLE_NAME) {
+    if (!SYSTEM_ROLE_NAME || !CREATED_BY || ISACTIVE === undefined) {
       return res.status(400).json({ message: "System Role name is required" });
     }
-  
-    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME, (err, results) => {
+    
+    // Set the current date for CREATED_DATE
+    const CREATED_DATE = new Date();
+
+    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME, CREATED_BY, CREATED_DATE, ISACTIVE, (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
@@ -95,7 +98,70 @@ exports.viewCategory = (req, res) => {
       });
     });
   };
-  exports.viewSystemRole = (req, res) => {
+exports.updateSystemRole = (req, res) => {
+    const { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, ISACTIVE } = req.body;
+  
+    // Validate required fields
+    if (!SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME || !MODIFIED_BY || ISACTIVE === undefined ) {
+      return res.status(400).json({ message: "Mandatory fields are required" });
+    }
+  
+    // Set the current date for MODIFIED_DATE
+    const MODIFIED_DATE = new Date();
+  
+    // Call the model method to update the system role
+    CategoryModel.updateSystemRole(
+      { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, MODIFIED_DATE, ISACTIVE },
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({ message: "Internal server error" });
+        }
+  
+        // Check if the update affected any rows
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "System Role not found" });
+        }
+  
+        res.status(200).json({
+          status: "True",
+          message: "System Role updated successfully",
+        });
+      }
+    );
+  };
+exports.deleteSystemRole = (req, res) => {
+    const { SYSTEM_ROLE_SYS_ID, MODIFIED_BY } = req.body;
+  
+    // Validate required fields
+    if (!SYSTEM_ROLE_SYS_ID || !MODIFIED_BY) {
+      return res.status(400).json({ message: "System Role ID and Modified By are required" });
+    }
+  
+    // Set the current date for MODIFIED_DATE
+    const MODIFIED_DATE = new Date();
+  
+    // Call the model method to delete (soft delete) the system role
+    CategoryModel.deleteSystemRole(
+      { SYSTEM_ROLE_SYS_ID, MODIFIED_BY, MODIFIED_DATE,ISACTIVE:false },
+      (err, results) => {
+        if (err) {
+          return res.status(500).json({ message: "Internal server error" });
+        }
+  
+        // Check if the delete affected any rows (role exists)
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ message: "System Role not found" });
+        }
+  
+        res.status(200).json({
+          status: "True",
+          message: "System Role deleted successfully",
+        });
+      }
+    );
+  };
+   
+exports.viewSystemRole = (req, res) => {
     const { ITEM } = req.query;
   
     if (!ITEM) {
