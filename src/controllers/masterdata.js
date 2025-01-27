@@ -79,16 +79,17 @@ exports.viewSubCategory = (req, res) => {
     });
   };
 exports.addSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_NAME, CREATED_BY, ISACTIVE } = req.body;
+    const { SYSTEM_ROLE_NAME, CREATED_BY } = req.body;
   
-    if (!SYSTEM_ROLE_NAME || !CREATED_BY || ISACTIVE === undefined) {
+    if (!SYSTEM_ROLE_NAME || !CREATED_BY) {
       return res.status(400).json({ message: "System Role name is required" });
     }
     
     // Set the current date for CREATED_DATE
     const CREATED_DATE = new Date();
+    const ISACTIVE =1;
 
-    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME, CREATED_BY, CREATED_DATE, ISACTIVE, (err, results) => {
+    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME,CREATED_BY,(err, results) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
@@ -99,19 +100,20 @@ exports.addSystemRole = (req, res) => {
     });
   };
 exports.updateSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, ISACTIVE } = req.body;
+    const { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY } = req.body;
   
     // Validate required fields
-    if (!SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME || !MODIFIED_BY || ISACTIVE === undefined ) {
+    if (!SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME || !MODIFIED_BY ) {
       return res.status(400).json({ message: "Mandatory fields are required" });
     }
   
     // Set the current date for MODIFIED_DATE
     const MODIFIED_DATE = new Date();
+    const ISACTIVE =1;
   
     // Call the model method to update the system role
     CategoryModel.updateSystemRole(
-      { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, MODIFIED_DATE, ISACTIVE },
+      { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY },
       (err, results) => {
         if (err) {
           return res.status(500).json({ message: "Internal server error" });
@@ -130,19 +132,19 @@ exports.updateSystemRole = (req, res) => {
     );
   };
 exports.deleteSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_SYS_ID, MODIFIED_BY } = req.body;
+    const { SYSTEM_ROLE_SYS_ID, CREATED_BY } = req.body;
   
     // Validate required fields
-    if (!SYSTEM_ROLE_SYS_ID || !MODIFIED_BY) {
-      return res.status(400).json({ message: "System Role ID and Modified By are required" });
+    if (!SYSTEM_ROLE_SYS_ID || !CREATED_BY) {
+      return res.status(400).json({ message: "System Role ID and Created By By are required" });
     }
   
     // Set the current date for MODIFIED_DATE
-    const MODIFIED_DATE = new Date();
+    const ISACTIVE =0;
   
     // Call the model method to delete (soft delete) the system role
     CategoryModel.deleteSystemRole(
-      { SYSTEM_ROLE_SYS_ID, MODIFIED_BY, MODIFIED_DATE,ISACTIVE:false },
+      { SYSTEM_ROLE_SYS_ID, CREATED_BY:false },
       (err, results) => {
         if (err) {
           return res.status(500).json({ message: "Internal server error" });

@@ -49,9 +49,9 @@ const CategoryModel = {
     }
     
   },
-  addSystemRole: (SYSTEM_ROLE_NAME, CREATED_BY, CREATED_DATE, ISACTIVE, callback) => {
-    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME, CREATED_BY, CREATED_DATE, ISACTIVE) VALUES (?,?,?,?)`;
-    connection.query(query, [SYSTEM_ROLE_NAME, CREATED_BY, CREATED_DATE, ISACTIVE], (err, results) => {
+  addSystemRole: (SYSTEM_ROLE_NAME, CREATED_BY, callback) => {
+    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME, CREATED_BY) VALUES (?,?)`;
+    connection.query(query, [SYSTEM_ROLE_NAME, CREATED_BY], (err, results) => {
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);
@@ -59,28 +59,26 @@ const CategoryModel = {
       callback(null, results);
     });
   },
-  updateSystemRole: (SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, MODIFIED_DATE, ISACTIVE, callback) => {
-    const { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, MODIFIED_DATE, ISACTIVE } = data;
-
-    // SQL query to update the system role in the database
-    const query = `
-      UPDATE TBL_SYSTEM_ROLE
-      SET SYSTEM_ROLE_NAME = ?, MODIFIED_BY = ?, MODIFIED_DATE = ?, ISACTIVE = ?
-      WHERE SYSTEM_ROLE_SYS_ID = ?
-    `;
-
-    // Execute the query
-    db.query(
-      query,
-      [SYSTEM_ROLE_NAME, MODIFIED_BY, MODIFIED_DATE, ISACTIVE, SYSTEM_ROLE_SYS_ID],
-      (err, results) => {
-        if (err) {
-          console.error("Error updating system role:", err);
-          return callback(err, null);
-        }
-        callback(null, results);
-      });
-  },
+  updateSystemRole: (SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, callback) => {
+    const query= `UPDATE INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, CREATED_BY) VALUES (?,?)`;
+    connection.query(query, [SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, CREATED_BY], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }, 
+  DeleteSystemRole: (SYSTEM_ROLE_SYS_ID, CREATED_BY, callback) => {
+    const query= `UPDATE INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_SYS_ID, CREATED_BY) VALUES (?,?)`;
+    connection.query(query, [SYSTEM_ROLE_SYS_ID, CREATED_BY], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  }, 
   viewSystemRole: (ITEM, callback) => {
     if(ITEM=="VIEW_ALL" ){
         const query = `SELECT * FROM TBL_SYSTEM_ROLE`;
