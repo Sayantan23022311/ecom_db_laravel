@@ -49,9 +49,9 @@ const CategoryModel = {
     }
     
   },
-  addSystemRole: (SYSTEM_ROLE_NAME, CREATED_BY, callback) => {
-    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME, CREATED_BY) VALUES (?,?)`;
-    connection.query(query, [SYSTEM_ROLE_NAME, CREATED_BY], (err, results) => {
+  addSystemRole: (SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE, callback) => {
+    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE) VALUES (?,?)`;
+    connection.query(query, [SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE], (err, results) => {
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);
@@ -59,9 +59,11 @@ const CategoryModel = {
       callback(null, results);
     });
   },
-  updateSystemRole: (SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY, callback) => {
-    const query= `UPDATE INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, CREATED_BY) VALUES (?,?)`;
-    connection.query(query, [SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, CREATED_BY], (err, results) => {
+  updateSystemRole: (SYSTEM_ROLE_NAME, MODIFIED_BY, SYSTEM_ROLE_SYS_ID, callback) => {
+    const query= ` UPDATE TBL_SYSTEM_ROLE 
+    SET SYSTEM_ROLE_NAME = ?, MODIFIED_BY = ? 
+    WHERE SYSTEM_ROLE_SYS_ID = ?`;
+    connection.query(query, [SYSTEM_ROLE_NAME, MODIFIED_BY, SYSTEM_ROLE_SYS_ID], (err, results) => {
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);
@@ -69,7 +71,7 @@ const CategoryModel = {
       callback(null, results);
     });
   }, 
-  DeleteSystemRole: (SYSTEM_ROLE_SYS_ID, CREATED_BY, callback) => {
+  deleteSystemRole: (SYSTEM_ROLE_SYS_ID, CREATED_BY, callback) => {
     const query= `UPDATE INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_SYS_ID, CREATED_BY) VALUES (?,?)`;
     connection.query(query, [SYSTEM_ROLE_SYS_ID, CREATED_BY], (err, results) => {
       if (err) {

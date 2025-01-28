@@ -100,20 +100,20 @@ exports.addSystemRole = (req, res) => {
     });
   };
 exports.updateSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY } = req.body;
+    const { SYSTEM_ROLE_NAME, MODIFIED_BY, SYSTEM_ROLE_SYS_ID } = req.body;
   
     // Validate required fields
-    if (!SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME || !MODIFIED_BY ) {
+    if (!SYSTEM_ROLE_SYS_ID || !SYSTEM_ROLE_NAME) {
       return res.status(400).json({ message: "Mandatory fields are required" });
     }
   
     // Set the current date for MODIFIED_DATE
-    const MODIFIED_DATE = new Date();
-    const ISACTIVE =1;
+    //const MODIFIED_DATE = new Date();
+    //const ISACTIVE =1;
   
     // Call the model method to update the system role
     CategoryModel.updateSystemRole(
-      { SYSTEM_ROLE_SYS_ID, SYSTEM_ROLE_NAME, MODIFIED_BY },
+      { SYSTEM_ROLE_NAME, MODIFIED_BY, SYSTEM_ROLE_SYS_ID},
       (err, results) => {
         if (err) {
           return res.status(500).json({ message: "Internal server error" });

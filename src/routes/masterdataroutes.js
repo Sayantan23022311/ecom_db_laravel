@@ -12,5 +12,7 @@ router.get('/get-category',verifyToken, category.viewCategory);
 router.post('/add-subcategory',verifyToken, category.addSubCategory);
 router.get('/get-subcategory',verifyToken, category.viewSubCategory);
 router.post('/add-systemrole',verifyToken, category.addSystemRole);
+router.post('/update-systemrole', category.updateSystemRole);
+//router.post('/add-systemrole',verifyToken, category.deleteSystemRole);
 router.get('/get-systemrole', verifyToken,category.viewSystemRole);
 module.exports = router;
