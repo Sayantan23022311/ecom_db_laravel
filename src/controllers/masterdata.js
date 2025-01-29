@@ -78,6 +78,7 @@ const CategoryModel = require("../models/masterdatamodels");
       });
     });
   };
+  //////////////// system role code
   exports.addSystemRole = (req, res) => {
     const { SYSTEM_ROLE_NAME } = req.body;
   
@@ -85,13 +86,47 @@ const CategoryModel = require("../models/masterdatamodels");
       return res.status(400).json({ message: "System Role name is required" });
     }
   
-    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME, (err, results) => {
+    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME,1, (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
       res.status(200).json({
         status: "True",
         message: "System Role added successfully",
+      });
+    });
+  };
+  exports.updateSystemRole = (req, res) => {
+    const { SYSTEM_ROLE_NAME,SYSTEM_ROLE_SYS_ID } = req.body;
+  
+    if (!SYSTEM_ROLE_NAME|| !SYSTEM_ROLE_SYS_ID) {
+      return res.status(400).json({ message: "System Role name is required" });
+    }
+  
+    CategoryModel.updateSystemRole(SYSTEM_ROLE_NAME,SYSTEM_ROLE_SYS_ID, 1, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "System Role updated successfully",
+      });
+    });
+  };
+  exports.deleteSystemrole = (req, res) => {
+    const { SYSTEM_ROLE_SYS_ID } = req.body;
+  
+    // if ( !SYSTEM_ROLE_SYS_ID) {
+    //   return res.status(400).json({ message: "System Role id is required" });
+    // }
+  
+    CategoryModel.deleteSystemrole(SYSTEM_ROLE_SYS_ID, 0, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "System Role Delete successfully",
       });
     });
   };
