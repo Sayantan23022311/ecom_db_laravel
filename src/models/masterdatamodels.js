@@ -49,44 +49,9 @@ const CategoryModel = {
     }
     
   },
-<<<<<<< HEAD
   addSystemRole: (SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE, callback) => {
     const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE) VALUES (?,?)`;
     connection.query(query, [SYSTEM_ROLE_NAME, CREATED_BY,CREATED_DATE], (err, results) => {
-=======
-
-
-
-///////system role code
-
-  addSystemRole: (SYSTEM_ROLE_NAME,ISACTIVE, callback) => {
-    const query = `INSERT INTO TBL_SYSTEM_ROLE (SYSTEM_ROLE_NAME,ISACTIVE) VALUES (?,?)`;
-    connection.query(query, [SYSTEM_ROLE_NAME,ISACTIVE], (err, results) => {
-      if (err) {
-        console.error("Error in addCity model:", err);
-        return callback(err, null);
-      }
-      callback(null, results);
-    });
-  },
-  updateSystemRole: (SYSTEM_ROLE_NAME,SYSTEM_ROLE_SYS_ID,ISACTIVE, callback) => {
-    const query = `UPDATE TBL_SYSTEM_ROLE
-    SET SYSTEM_ROLE_NAME = ?, ISACTIVE = ?
-    WHERE SYSTEM_ROLE_SYS_ID = ?`;
-    connection.query(query, [SYSTEM_ROLE_NAME,ISACTIVE,SYSTEM_ROLE_SYS_ID], (err, results) => {
-      if (err) {
-        console.error("Error in addCity model:", err);
-        return callback(err, null);
-      }
-      callback(null, results);
-    });
-  },
-  deleteSystemrole: (SYSTEM_ROLE_SYS_ID,ISACTIVE, callback) => {
-    const query = `UPDATE TBL_SYSTEM_ROLE
-    SET  ISACTIVE = ?
-    WHERE SYSTEM_ROLE_SYS_ID = ?`;
-    connection.query(query, [ISACTIVE,SYSTEM_ROLE_SYS_ID], (err, results) => {
->>>>>>> origin/riju
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);

@@ -78,29 +78,18 @@ exports.viewSubCategory = (req, res) => {
       });
     });
   };
-<<<<<<< HEAD
 exports.addSystemRole = (req, res) => {
     const { SYSTEM_ROLE_NAME, CREATED_BY } = req.body;
-=======
-  //////////////// system role code
-  exports.addSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_NAME } = req.body;
->>>>>>> origin/riju
   
     if (!SYSTEM_ROLE_NAME || !CREATED_BY) {
       return res.status(400).json({ message: "System Role name is required" });
     }
-<<<<<<< HEAD
     
     // Set the current date for CREATED_DATE
     const CREATED_DATE = new Date();
     const ISACTIVE =1;
 
     CategoryModel.addSystemRole(SYSTEM_ROLE_NAME,CREATED_BY,(err, results) => {
-=======
-  
-    CategoryModel.addSystemRole(SYSTEM_ROLE_NAME,1, (err, results) => {
->>>>>>> origin/riju
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
@@ -110,7 +99,6 @@ exports.addSystemRole = (req, res) => {
       });
     });
   };
-<<<<<<< HEAD
 exports.updateSystemRole = (req, res) => {
     const { SYSTEM_ROLE_NAME, MODIFIED_BY, SYSTEM_ROLE_SYS_ID } = req.body;
   
@@ -176,43 +164,6 @@ exports.deleteSystemRole = (req, res) => {
   };
    
 exports.viewSystemRole = (req, res) => {
-=======
-  exports.updateSystemRole = (req, res) => {
-    const { SYSTEM_ROLE_NAME,SYSTEM_ROLE_SYS_ID } = req.body;
-  
-    if (!SYSTEM_ROLE_NAME|| !SYSTEM_ROLE_SYS_ID) {
-      return res.status(400).json({ message: "System Role name is required" });
-    }
-  
-    CategoryModel.updateSystemRole(SYSTEM_ROLE_NAME,SYSTEM_ROLE_SYS_ID, 1, (err, results) => {
-      if (err) {
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      res.status(200).json({
-        status: "True",
-        message: "System Role updated successfully",
-      });
-    });
-  };
-  exports.deleteSystemrole = (req, res) => {
-    const { SYSTEM_ROLE_SYS_ID } = req.body;
-  
-    // if ( !SYSTEM_ROLE_SYS_ID) {
-    //   return res.status(400).json({ message: "System Role id is required" });
-    // }
-  
-    CategoryModel.deleteSystemrole(SYSTEM_ROLE_SYS_ID, 0, (err, results) => {
-      if (err) {
-        return res.status(500).json({ message: "Internal server error" });
-      }
-      res.status(200).json({
-        status: "True",
-        message: "System Role Delete successfully",
-      });
-    });
-  };
-  exports.viewSystemRole = (req, res) => {
->>>>>>> origin/riju
     const { ITEM } = req.query;
   
     if (!ITEM) {
