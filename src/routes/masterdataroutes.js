@@ -7,10 +7,14 @@ const verifyToken = require("../middleware/loginmiddleware");
 const router = express.Router();
 
 // Login route
-router.post('/add-category',verifyToken, category.addCategory);
-router.get('/get-category',verifyToken, category.viewCategory);
+router.post('/add-category', category.addCategory);
+router.post('/update-category', category.updateCategory);
+router.post('/delete-category', category.deleteCategory);
+router.get('/get-category', category.viewCategory);
 router.post('/add-subcategory', category.addSubCategory);
-router.get('/get-subcategory',verifyToken, category.viewSubCategory);
+router.post('/update-subcategory', category.updateSubCategory);
+router.post('/delete-subcategory', category.deleteSubCategory);
+router.get('/get-subcategory', category.viewSubCategory);
 router.post('/add-systemrole', category.addSystemRole);
 router.post('/update-systemrole', category.updateSystemRole);
 router.post('/delete-systemrole', category.deleteSystemrole);
