@@ -26,7 +26,7 @@ const userModel = require("../models/usermodels");
     }
     
     const user = results[0];
-    res.json({ message: "Login successful", user });
+    res.json({ status: "True",message: "Login successful", user });
   });
 
 };
