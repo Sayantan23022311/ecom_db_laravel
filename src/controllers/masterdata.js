@@ -1,5 +1,6 @@
 const CategoryModel = require("../models/masterdatamodels");
 
+/////////////// category code
   exports.addCategory = (req, res) => {
   const { COURSE_CATEGORY_NAME } = req.body;
 
@@ -7,15 +8,46 @@ const CategoryModel = require("../models/masterdatamodels");
     return res.status(400).json({ message: "Category name is required" });
   }
 
-  CategoryModel.addCategory(COURSE_CATEGORY_NAME, (err, results) => {
+  CategoryModel.addCategory(COURSE_CATEGORY_NAME,1, (err, results) => {
     if (err) {
       return res.status(500).json({ message: "Internal server error" });
     }
+  
     res.status(200).json({
       status: "True",
       message: "Category added successfully",
     });
   });
+  };
+  exports.updateCategory = (req, res) => {
+    const { COURSE_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID } = req.body;
+  
+    if (!COURSE_CATEGORY_NAME|| !COURSE_CATEGORY_SYS_ID) {
+      return res.status(400).json({ message: "Course Category name is required" });
+    }
+  
+    CategoryModel.updateCategory(COURSE_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID, 1, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "Course Category updated successfully",
+      });
+    });
+  };
+  exports.deleteCategory = (req, res) => {
+    const { COURSE_CATEGORY_SYS_ID } = req.body;
+  
+    CategoryModel.deleteCategory(COURSE_CATEGORY_SYS_ID, 0, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "Course Category Deleted successfully",
+      });
+    });
   };
   exports.viewCategory = (req, res) => {
     const { ITEM } = req.query;
@@ -42,10 +74,10 @@ const CategoryModel = require("../models/masterdatamodels");
     const { COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID  } = req.body;
   
     if (!COURSE_SUB_CATEGORY_NAME|| !COURSE_CATEGORY_SYS_ID ) {
-      return res.status(400).json({ message: "Subcategory name is required" });
+      return res.status(400).json({ message: "Category sys id and Subcategory name is required" });
     }
   
-    CategoryModel.addSubCategory(COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID, (err, results) => {
+    CategoryModel.addSubCategory(COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID,1, (err, results) => {
       if (err) {
         console.log(err);
         
@@ -57,14 +89,44 @@ const CategoryModel = require("../models/masterdatamodels");
       });
     });
   };
-  exports.viewSubCategory = (req, res) => {
-    const { ITEM,COURSE_CATEGORY_SYS_ID } = req.query;
+  exports.updateSubCategory = (req, res) => {
+    const { COURSE_SUB_CATEGORY_NAME,COURSE_SUB_CATEGORY_SYS_ID } = req.body;
   
-    if (!ITEM || !COURSE_CATEGORY_SYS_ID) {
+    if (!COURSE_SUB_CATEGORY_NAME|| !COURSE_SUB_CATEGORY_SYS_ID) {
+      return res.status(400).json({ message: "Course Sub Category name and course Course sub category sys id is required" });
+    }
+  
+    CategoryModel.updateSubCategory(COURSE_SUB_CATEGORY_NAME,COURSE_SUB_CATEGORY_SYS_ID, 1, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "Course Sub Category updated successfully",
+      });
+    });
+  };
+  exports.deleteSubCategory = (req, res) => {
+    const { COURSE_SUB_CATEGORY_SYS_ID } = req.body;
+  
+    CategoryModel.deleteSubCategory(COURSE_SUB_CATEGORY_SYS_ID, 0, (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.status(200).json({
+        status: "True",
+        message: "Course Sub Category Deleted successfully",
+      });
+    });
+  };
+  exports.viewSubCategory = (req, res) => {
+    const { ITEM,COURSE_SUB_CATEGORY_SYS_ID } = req.query;
+  
+    if (!ITEM || !COURSE_SUB_CATEGORY_SYS_ID) {
       return res.status(400).json({ message: "Invalid paramiter" });
     }
   
-    CategoryModel.viewSubCategory(ITEM, COURSE_CATEGORY_SYS_ID,(err, results) => {
+    CategoryModel.viewSubCategory(ITEM, COURSE_SUB_CATEGORY_SYS_ID,(err, results) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }

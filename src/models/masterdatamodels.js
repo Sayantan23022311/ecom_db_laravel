@@ -2,9 +2,33 @@ const connection = require("../Config/db");
 
 const CategoryModel = {
   // Add category
-  addCategory: (COURSE_CATEGORY_NAME, callback) => {
-    const query = `INSERT INTO TBL_MST_COURSE_CATEGORY (COURSE_CATEGORY_NAME) VALUES (?)`;
-    connection.query(query, [COURSE_CATEGORY_NAME], (err, results) => {
+  addCategory: (COURSE_CATEGORY_NAME,ISACTIVE, callback) => {
+    const query = `INSERT INTO TBL_MST_COURSE_CATEGORY (COURSE_CATEGORY_NAME,ISACTIVE) VALUES (?,?)`;
+    connection.query(query, [COURSE_CATEGORY_NAME,ISACTIVE], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
+  updateCategory: (COURSE_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID,ISACTIVE, callback) => {
+    const query = `UPDATE TBL_MST_COURSE_CATEGORY
+    SET COURSE_CATEGORY_NAME = ?, ISACTIVE = ?
+    WHERE COURSE_CATEGORY_SYS_ID = ?`;
+    connection.query(query, [COURSE_CATEGORY_NAME,ISACTIVE,COURSE_CATEGORY_SYS_ID], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
+  deleteCategory: (COURSE_CATEGORY_SYS_ID,ISACTIVE, callback) => {
+    const query = `UPDATE TBL_MST_COURSE_CATEGORY
+    SET  ISACTIVE = ?
+    WHERE COURSE_CATEGORY_SYS_ID = ?`;
+    connection.query(query, [ISACTIVE,COURSE_CATEGORY_SYS_ID], (err, results) => {
       if (err) {
         console.error("Error in addCity model:", err);
         return callback(err, null);
@@ -14,7 +38,7 @@ const CategoryModel = {
   },
   viewCategory: (ITEM, callback) => {
     if(ITEM=="VIEW_ALL" ){
-        const query = `SELECT * FROM TBL_MST_COURSE_CATEGORY`;
+        const query = `SELECT * FROM TBL_MST_COURSE_CATEGORY WHERE ISACTIVE = 1`;
         connection.query(query,  (err, results) => {
           if (err) {
             console.error("Error in addCity model:", err);
@@ -25,10 +49,10 @@ const CategoryModel = {
     }
     
   },
-  addSubCategory: (COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID, callback) => {
+  addSubCategory: (COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID,ISACTIVE, callback) => {
     
-    const query = `INSERT INTO TBL_MST_COURSE_SUB_CATEGORY (COURSE_SUB_CATEGORY_NAME, COURSE_CATEGORY_SYS_ID) VALUES (?, ?)`;
-    connection.query(query, [COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID], (err, results) => {
+    const query = `INSERT INTO TBL_MST_COURSE_SUB_CATEGORY (COURSE_SUB_CATEGORY_NAME, COURSE_CATEGORY_SYS_ID,ISACTIVE) VALUES (?, ?, ?)`;
+    connection.query(query, [COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID,ISACTIVE], (err, results) => {
       if (err) {
         
         return callback(err, null);
@@ -36,10 +60,34 @@ const CategoryModel = {
       callback(null, results);
     });
   },
-  viewSubCategory: (ITEM, COURSE_CATEGORY_SYS_ID,callback) => {
-    if(ITEM=="VIEW_ALL" || COURSE_CATEGORY_SYS_ID !="" ){
-        const query = `SELECT * FROM TBL_MST_COURSE_SUB_CATEGORY WHERE COURSE_CATEGORY_SYS_ID = ?;`;
-        connection.query(query, [COURSE_CATEGORY_SYS_ID], (err, results) => {
+  updateSubCategory: (COURSE_SUB_CATEGORY_NAME,COURSE_SUB_CATEGORY_SYS_ID,ISACTIVE, callback) => {
+    const query = `UPDATE TBL_MST_COURSE_SUB_CATEGORY
+    SET COURSE_SUB_CATEGORY_NAME = ?, ISACTIVE = ?
+    WHERE COURSE_SUB_CATEGORY_SYS_ID = ?`;
+    connection.query(query, [COURSE_SUB_CATEGORY_NAME,ISACTIVE,COURSE_SUB_CATEGORY_SYS_ID], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
+  deleteSubCategory: (COURSE_SUB_CATEGORY_SYS_ID,ISACTIVE, callback) => {
+    const query = `UPDATE TBL_MST_COURSE_SUB_CATEGORY
+    SET  ISACTIVE = ?
+    WHERE COURSE_SUB_CATEGORY_SYS_ID = ?`;
+    connection.query(query, [ISACTIVE,COURSE_SUB_CATEGORY_SYS_ID], (err, results) => {
+      if (err) {
+        console.error("Error in addCity model:", err);
+        return callback(err, null);
+      }
+      callback(null, results);
+    });
+  },
+  viewSubCategory: (ITEM, COURSE_SUB_CATEGORY_SYS_ID,callback) => {
+    if(ITEM=="VIEW_ALL" || COURSE_SUB_CATEGORY_SYS_ID !="" ){
+        const query = `SELECT * FROM TBL_MST_COURSE_SUB_CATEGORY WHERE ISACTIVE = 1;`;
+        connection.query(query, [COURSE_SUB_CATEGORY_SYS_ID], (err, results) => {
           if (err) {
             console.error("Error in addCity model:", err);
             return callback(err, null);
