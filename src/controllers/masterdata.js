@@ -70,6 +70,7 @@ const CategoryModel = require("../models/masterdatamodels");
       });
     });
   };
+  //////////////// sub
   exports.addSubCategory = (req, res) => {
     const { COURSE_SUB_CATEGORY_NAME,COURSE_CATEGORY_SYS_ID  } = req.body;
   

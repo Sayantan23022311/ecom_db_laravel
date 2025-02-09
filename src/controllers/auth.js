@@ -19,7 +19,7 @@ exports.login = (req, res) => {
     }
   
     if (!results || results.length === 0) {
-      return res.status(200).json({ message: "User account not avalable in this system" });
+      return res.status(200).json({ status:"false",  message: "User account not avalable in this system" });
     }
   
     const user = results[0];
@@ -35,7 +35,7 @@ exports.login = (req, res) => {
       }
   
       if (PASSWORD != user.PASSWORD) {
-        return res.status(200).json({ message: "Wrong Passsword plz check it" });
+        return res.status(200).json({status:"false",  message: "Wrong Passsword plz check it" });
       }
   
       // Password is correct, generate token
