@@ -149,6 +149,19 @@ const CategoryModel = {
     }
     
   },
+  viewMasterDataName: (ITEM, callback) => {
+    if(ITEM=="VIEW_ALL" ){
+        const query = `SELECT * FROM TBL_MASTER_DATA_NAME WHERE ISACTIVE = 1 `;
+        connection.query(query,  (err, results) => {
+          if (err) {
+            console.error("Error in addCity model:", err);
+            return callback(err, null);
+          }
+          callback(null, results);
+        });
+    }
+    
+  },
 
 };
 

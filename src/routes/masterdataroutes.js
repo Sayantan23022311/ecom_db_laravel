@@ -19,4 +19,5 @@ router.post('/add-systemrole', category.addSystemRole);
 router.post('/update-systemrole', category.updateSystemRole);
 router.post('/delete-systemrole', category.deleteSystemrole);
 router.get('/get-systemrole',category.viewSystemRole);
+router.get('/get-masterdataname',category.viewMasterDataName);
 module.exports = router;
