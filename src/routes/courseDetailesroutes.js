@@ -9,4 +9,6 @@ const router = express.Router();
 
 // User route
 router.post('/add-course-detailes',upload.single("COURSE_IMAGE"), courseRoutes.addCourse);
+//router.get('/course-search', courseRoutes.searchCourse);
+
 module.exports = router;

@@ -55,3 +55,24 @@ exports.addUser = (req, res) => {
     );
   });
 };
+
+exports.viewUser = (req, res) => {
+  const { ITEM } = req.query;
+  console.log(req.query)
+  // if (!ITEM) {
+  //   return res.status(400).json({ message: "Invalid paramiter" });
+  // }
+
+  UserModel.viewUser(ITEM, (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    const response = results;
+     
+    
+    res.status(200).json({
+      status: "True",response
+     
+    });
+  });
+};

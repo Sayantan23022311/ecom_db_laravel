@@ -43,3 +43,25 @@ exports.addCourse = (req, res) => {
     );
   });
 };
+
+exports.searchCourse = (req, res) => {
+  const { ITEM,CATEGORY,SUB_CATEGORY } = req.query;
+  if (CATEGORY) {
+    query.COURSE_CATEGORY_SYS_ID = CATEGORY;
+  }
+  if (SUB_CATEGORY) {
+    query.COURSE_SUB_CATEGORY_SYS_ID = SUB_CATEGORY;
+  }
+
+  CategoryModel.searchCourse(ITEM,CATEGORY,SUB_CATEGORY, (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    const response = results;
+    
+    res.status(200).json({
+      status: "True",response
+
+    });
+  });
+  }

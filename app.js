@@ -7,8 +7,8 @@ const userRoutes = require('./src/routes/userroutes');
 const courseRoutes = require('./src/routes/courseDetailesroutes');
 //const mobileapproutes = require('./src/routes/masterdataroutes');
 const app = express();
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+//const multer  = require('multer')
+//const upload = multer({ dest: 'uploads/' })
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());

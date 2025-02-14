@@ -8,4 +8,5 @@ const router = express.Router();
 
 // User route
 router.post('/add-post-user', userRoutes.addUser);
+router.get('/get-user',userRoutes.viewUser);
 module.exports = router;
