@@ -121,13 +121,13 @@ const CategoryModel = require("../models/masterdatamodels");
     });
   };
   exports.viewSubCategory = (req, res) => {
-    const { ITEM,COURSE_SUB_CATEGORY_SYS_ID } = req.query;
+    const { ITEM } = req.query;
   
-    if (!ITEM || !COURSE_SUB_CATEGORY_SYS_ID) {
+    if (!ITEM) {
       return res.status(400).json({ message: "Invalid paramiter" });
     }
   
-    CategoryModel.viewSubCategory(ITEM, COURSE_SUB_CATEGORY_SYS_ID,(err, results) => {
+    CategoryModel.viewSubCategory(ITEM,(err, results) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
@@ -135,7 +135,28 @@ const CategoryModel = require("../models/masterdatamodels");
       
       
       res.status(200).json({
-        status: "True",response
+      status: "True",response
+       
+        // message: "Category added successfully",
+      });
+    });
+  };
+  exports.viewSubCategoryById = (req, res) => {
+    const { ITEM,CATEGORY_SYS_ID } = req.query;
+  
+    if (!ITEM || !CATEGORY_SYS_ID) {
+      return res.status(400).json({ message: "Invalid paramiter" });
+    }
+  
+    CategoryModel.viewSubCategoryById(ITEM, CATEGORY_SYS_ID,(err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      const response = results;
+      
+      
+      res.status(200).json({
+      status: "True",response
        
         // message: "Category added successfully",
       });

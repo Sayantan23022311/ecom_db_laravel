@@ -84,10 +84,23 @@ const CategoryModel = {
       callback(null, results);
     });
   },
-  viewSubCategory: (ITEM, COURSE_SUB_CATEGORY_SYS_ID,callback) => {
-    if(ITEM=="VIEW_ALL" || COURSE_SUB_CATEGORY_SYS_ID !="" ){
+  viewSubCategory: (ITEM,callback) => {
+    if(ITEM=="VIEW_ALL" ){
         const query = `SELECT * FROM TBL_MST_COURSE_SUB_CATEGORY WHERE ISACTIVE = 1;`;
-        connection.query(query, [COURSE_SUB_CATEGORY_SYS_ID], (err, results) => {
+        connection.query(query, (err, results) => {
+          if (err) {
+            console.error("Error in addCity model:", err);
+            return callback(err, null);
+          }
+          callback(null, results);
+        });
+    }
+    
+  },
+  viewSubCategoryById: (ITEM, CATEGORY_SYS_ID,callback) => {
+    if(ITEM=="SPECIFIC" || CATEGORY_SYS_ID !="" ){
+        const query = `SELECT * FROM TBL_MST_COURSE_SUB_CATEGORY WHERE ISACTIVE = 1;`;
+        connection.query(query, [CATEGORY_SYS_ID], (err, results) => {
           if (err) {
             console.error("Error in addCity model:", err);
             return callback(err, null);

@@ -15,6 +15,7 @@ router.post('/add-subcategory', category.addSubCategory);
 router.post('/update-subcategory', category.updateSubCategory);
 router.post('/delete-subcategory', category.deleteSubCategory);
 router.get('/get-subcategory', category.viewSubCategory);
+router.get('/get-subcategory-by-id', category.viewSubCategoryById);
 router.post('/add-systemrole', category.addSystemRole);
 router.post('/update-systemrole', category.updateSystemRole);
 router.post('/delete-systemrole', category.deleteSystemrole);
